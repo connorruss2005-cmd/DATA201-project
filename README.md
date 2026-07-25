@@ -1,7 +1,7 @@
 # DATA201-project
 
 Project Description
--This repository is used for our DATA201 group project.
+- This repository is used for our DATA201 group project.
 
 Team members
 - Conner 
@@ -14,4 +14,4 @@ Team Rules
 - 
 
 How to interact with each other
-- we will comunicate through WhatsApp and meet in person when necessary.
+- We will comunicate through WhatsApp and meet in person when necessary.
