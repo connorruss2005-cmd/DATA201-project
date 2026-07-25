@@ -9,7 +9,7 @@ Team members
 - Kazushi 
 
 Team Rules
-- nothing right now
+- Let's take update information firstly before we start project. (git pull origin main ,which is one of command to take update information on VSCode Terminal)
 - 
 - 
 
