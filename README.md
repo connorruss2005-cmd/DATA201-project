@@ -9,7 +9,7 @@ Team members
 - Kazushi 
 
 Team Rules
-- Let's take up-to-date information firstly before we start project. (git pull origin main ,which is one of command to take up-to-date information on VSCode Terminal)
+- Let's take up-to-date information firstly before we start project. (git pull origin main ,which is one of command to take up-to-date information from Github on VSCode Terminal)
 - 
 - 
 
