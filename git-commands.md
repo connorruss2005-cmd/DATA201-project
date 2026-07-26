@@ -9,7 +9,6 @@
 
 ## Check changes
 - git status
-- aaa
 
 ## Save changes
 - git add .
