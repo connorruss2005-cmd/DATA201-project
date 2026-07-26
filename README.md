@@ -6,11 +6,11 @@ Project Description
 Team members
 - Conner 
 - Kayal 
-- Kazushi 
+- Kazushi (exchange student)
 
 Team Rules
 - nothing right now
-- 
+- aaa
 - 
 
 How to interact with each other

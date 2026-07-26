@@ -1,11 +1,11 @@
 # Git Commands Memo
 
-## Get the latest main branch
-- git switch main
-- git pull origin main
+## Get the latest branch
+- git switch (branch-name)
+- git pull origin (branch-name)
 
 ## Create a new branch
-- git switch -c branch-name
+- git switch -c (new-branch-name)
 
 ## Check changes
 - git status
@@ -15,4 +15,4 @@
 - git commit -m "Describe the change"
 
 ## Push the branch to GitHub
-- git push -u origin (branch-name)
+- git push origin (branch-name)
