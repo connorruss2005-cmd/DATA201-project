@@ -14,7 +14,7 @@
 - git status
 
 ## Check the changed content
-- git diff ("q" on keybord is the finished command)
+- git diff ("q" on keybord is the command to finish)
 
 ## Save changes
 - git add (file-name)
