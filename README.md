@@ -7,6 +7,7 @@ Team members
 - Conner 
 - Kayal 
 - Kazushi (exchange student)
+- Johan
 
 Team Rules
 - Nothing right now
