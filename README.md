@@ -10,7 +10,7 @@ Team members
 
 Team Rules
 - nothing right now
-- aa
+- 
 - 
 
 How to interact with each other
