@@ -4,7 +4,7 @@ Project Description
 - This repository is used for our DATA201 and DATA422 group project.
 
 Team members
-- Conner 
+- Connor 
 - Kayal 
 - Kazushi (exchange student)
 - Johan
