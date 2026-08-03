@@ -1,17 +1,18 @@
-# DATA201-project
+# DATA201-DATA422 project
 
 Project Description
-- This repository is used for our DATA201 group project.
+- This repository is used for our DATA201 and DATA422 group project.
 
 Team members
 - Conner 
 - Kayal 
-- Kazushi 
+- Kazushi (exchange student)
+- Johan
 
 Team Rules
-- Let's take up-to-date information firstly before we start project. (git pull origin main ,which is one of command to take up-to-date information from Github on VSCode Terminal)
-- 
+- Nothing right now
+- Let's all discuss and help each other
 - 
 
 How to interact with each other
-- We will comunicate through WhatsApp and meet in person when necessary.
+- We will comunicate through WhatsApp group and meet in person when necessary.
