@@ -1,0 +1,9 @@
+#Packages to install
+pandas
+matplotlib
+numpy
+
+#Commands for install (paste into terminal)
+# pip install pandas
+# pip install matplotlib
+# pip install numpy
