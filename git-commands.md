@@ -10,6 +10,12 @@
 ## Create a new branch
 - git switch -c (new-branch-name)
 
+## Create a new folder
+- mkdir (new-folder-name)
+
+## Create a new file
+- New-Item (new-file-name+format, such as .txt, .py)
+
 ## Check changes
 - git status
 
