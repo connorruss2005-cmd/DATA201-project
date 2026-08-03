@@ -17,3 +17,4 @@ Team Rules
 How to interact with each other
 - We will comunicate through WhatsApp group and meet in person when necessary.
 
+
