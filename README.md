@@ -18,16 +18,14 @@ How to interact with each other
 - We will comunicate through WhatsApp group and meet in person when necessary.
 
 
-Commands for install (paste into terminal)
-- pip install pandas
-- pip install matplotlib
-- pip install numpy
-
 --------------------------------------------------------------------------------------------------
 
 Dataset overview and Data Dictionary
 
-**source** | Inside Airbnb (http://insideairbnb.com/get-the-data/) (New Zealand dataset, June 2026).
+Source
+* **Dataset Name:** Airbnb Listings Data (`listings.csv`)
+* **Source:** [Inside Airbnb](http://insideairbnb.com/get-the-data/)
+* **Format:** CSV
 
 Key Columns and Definitions
 
