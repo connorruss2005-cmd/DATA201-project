@@ -17,10 +17,6 @@ Team Rules
 How to interact with each other
 - We will comunicate through WhatsApp group and meet in person when necessary.
 
-Packages to install
-- Pandas
-- MatplotLib
-- Numpy
 
 Commands for install (paste into terminal)
 - pip install pandas
