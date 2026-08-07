@@ -34,9 +34,8 @@ hosts, locations, prices, availability, and reviews.
 - Dataset period: June 2026
 - File used: `listings.csv`
 - Collection method: Web-scraped Airbnb listing data
-- Access date: [Enter the date your team downloaded the dataset]
-- Original source: [Insert the Inside Airbnb dataset page link]
-
+- Access date: 04/08/2026
+- Original source: https://insideairbnb.com/get-the-data/
 Due to its large size and the conditions associated with external data,
 the dataset is stored locally in the `data` folder and is not included
 in this GitHub repository. The `data` folder is listed in `.gitignore`.
