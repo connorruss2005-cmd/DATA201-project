@@ -14,7 +14,7 @@ df['last_review'] = pd.to_datetime(df['last_review'])
 # Create month + year column
 df['month/year'] = df['last_review'].dt.strftime('%B %Y')
 
-# Save updated csv
+# Saves updated csv
 df.to_csv('listings.csv', index=False)
 
 print(df.head())
