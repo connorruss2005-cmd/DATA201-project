@@ -1,4 +1,18 @@
-#Filter
+"""
+Deliverable 3
+
+Tasks:
+- Loaded Airbnb listings datasets from October 2025 to June 2026.
+- Filtered all datasets to Christchurch City only.
+- Added a month_year column to each monthly dataset.
+- Concatenated all monthly datasets into one Christchurch dataset.
+- Produced summary statistics for numerical and categorical columns.
+- Checked missing values in each column.
+- Removed the license column because all values were missing.
+- Saved the concatenated dataset as a new CSV file.
+- Reproduced the price distribution histogram in Python.
+"""
+
 import pandas as pd
 
 # October 2025
