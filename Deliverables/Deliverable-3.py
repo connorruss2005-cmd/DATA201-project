@@ -1,159 +1,76 @@
-"""
-Deliverable 3
-
-Tasks:
-- Loaded Airbnb listings datasets from October 2025 to June 2026.
-- Filtered all datasets to Christchurch City only.
-- Added a month_year column to each monthly dataset.
-- Concatenated all monthly datasets into one Christchurch dataset.
-- Produced summary statistics for numerical and categorical columns.
-- Checked missing values in each column.
-- Removed the license column because all values were missing.
-- Saved the concatenated dataset as a new CSV file.
-- Reproduced the price distribution histogram in Python.
-"""
-
+# Packages we are using, please install them if you don't have them yet.
+# Also be sure you have all the listings.csv files downloaded.
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# October 2025
-# Read the CSV file and store it in a DataFrame called df.
-### downloaded each monthly dataset from October to June.
-oct_df = pd.read_csv("data/listings_2025_10.csv", encoding="latin1")
+# Iterate through the 9 listings files
+#for i in range(1, 10):
+#    filename = f"listings{i}.csv"
+#
+#    df = pd.read_csv(filename)
+#
+#    # Filter for Christchurch City listings
+#    df = df[df["neighbourhood_group"] == "Christchurch City"]
+#
+#    # Convert the last_review column to datetime format
+#    df["last_review"] = pd.to_datetime(df["last_review"])
+#    
+#    # Add a new column for month/year of the last review
+#    df["month/year"] = df["last_review"].dt.to_period("M")
+#
+#    df.to_csv(f"listings_{i}_updated.csv", index=False)
 
 
-# Display all column names as a Python list.
-# print(oct_df.columns.tolist())
-
-# Display all values in the neighbourhood_group column.
-# print(oct_df["neighbourhood_group"])
-
-# Display unique values in the neighbourhood_group column.
-# print(oct_df["neighbourhood_group"].unique())
-
-# Display the number of raws and columns
-# print(oct_df.shape)
-
-
-## (process1) Filter all dataset to Christchurch City only.
-### load each dataset into Python by using pandas and filtered each dataset, so these dataset only contain Christchurch City data.
-filter_oct_df = oct_df[oct_df["neighbourhood_group"] == "Christchurch City"].copy()
-# print(df.shape)
-# print(filter_oct_df.shape)
-
-# Add a column for the month + year.
-### add a month_year column to each dataset to identify which month each row came from.
-filter_oct_df["month_year"] = "October 2025"
-# Check the new column.
-# print(filter_df["month_year"].head())
-# Check all column names
-# print(filter_df.columns.tolist())
+#data_sets = []
+#
+#for i in range(1, 10):
+#    filename = f"listings_{i}_updated.csv"
+#    df = pd.read_csv(filename)
+#
+#    # Add the dataframes to an empty list
+#    data_sets.append(df)
+#
+## Concatenate all datasets
+#combined = pd.concat(data_sets, ignore_index=True)
+#
+#combined.to_csv("combined_Christchurch_listings.csv", index=False)
 
 
-# November 2025
-nov_df = pd.read_csv("data/listings_2025_11.csv", encoding="latin1")
-filter_nov_df = nov_df[nov_df["neighbourhood_group"] == "Christchurch City"].copy()
-filter_nov_df["month_year"] = "November 2025"
+# Categories: different/unique values in a column
+# Counts: how many times each category appears in a column
 
-# December 2025
-dec_df = pd.read_csv("data/listings_2025_12.csv", encoding="latin1")
-filter_dec_df = dec_df[dec_df["neighbourhood_group"] == "Christchurch City"].copy()
-filter_dec_df["month_year"] = "December 2025"
+df = pd.read_csv("combined_Christchurch_listings.csv")
 
-# January 2026
-jan_df = pd.read_csv("data/listings_2026_01.csv", encoding="latin1")
-filter_jan_df = jan_df[jan_df["neighbourhood_group"] == "Christchurch City"].copy()
-filter_jan_df["month_year"] = "January 2026"
+# Show all columns when printing
+pd.set_option("display.max_columns", None)
 
-# February 2026
-feb_df = pd.read_csv("data/listings_2026_02.csv", encoding="latin1")
-filter_feb_df = feb_df[feb_df["neighbourhood_group"] == "Christchurch City"].copy()
-filter_feb_df["month_year"] = "February 2026"
+# -----------------------------
+# NUMERIC COLUMN SUMMARY
+# -----------------------------
 
-# March 2026
-mar_df = pd.read_csv("data/listings_2026_03.csv", encoding="latin1")
-filter_mar_df = mar_df[mar_df["neighbourhood_group"] == "Christchurch City"].copy()
-filter_mar_df["month_year"] = "March 2026"
+# Get summary statistics for numeric columns
+numeric_summary = df.select_dtypes(include="number").describe().T
 
-# April 2026
-apr_df = pd.read_csv("data/listings_2026_04.csv", encoding="latin1")
-filter_apr_df = apr_df[apr_df["neighbourhood_group"] == "Christchurch City"].copy()
-filter_apr_df["month_year"] = "April 2026"
+# Add a column for the number of missing values in each numeric column
+numeric_summary["missing"] = df[numeric_summary.index].isna().sum()
 
-# May 2026
-may_df = pd.read_csv("data/listings_2026_05.csv", encoding="latin1")
-filter_may_df = may_df[may_df["neighbourhood_group"] == "Christchurch City"].copy()
-filter_may_df["month_year"] = "May 2026"
-
-# June 2026
-jun_df = pd.read_csv("data/listings_2026_06.csv", encoding="latin1")
-filter_jun_df = jun_df[jun_df["neighbourhood_group"] == "Christchurch City"].copy()
-filter_jun_df["month_year"] = "June 2026"
+print("NUMERIC COLUMNS")
+print(numeric_summary)
 
 
-## (process2) Concatenate all filtered monthly datasets into a larger dataset spanning Oct 2025 to June 2026 for Christchurch.
-### combined all nine monthly datasets into one larger dataset.
-combined_df = pd.concat(
-    [
-        filter_oct_df,
-        filter_nov_df,
-        filter_dec_df,
-        filter_jan_df,
-        filter_feb_df,
-        filter_mar_df,
-        filter_apr_df,
-        filter_may_df,
-        filter_jun_df
-    ],
-    ignore_index = True
-)
+# -----------------------------
+# CATEGORICAL COLUMN SUMMARY
+# -----------------------------
 
-# print(combined_df.shape)
-# Display the number of listings for each month.
-# print(combined_df["month_year"].value_counts())
+categorical_columns = df.select_dtypes(include="str").columns
 
-# Remove the license column because all values are missing.
-### chech which columns have missing value
-print(combined_df.isnull().sum())
-# The license column contained only missing values, so I removed it because it does not privide useful information for the analysis.
-### the license column contained only missing values, so removerd it.
-combined_df = combined_df.drop(columns=["license"])
+for column in categorical_columns:
+    print(f"\n{column}")
+    print("Missing:", df[column].isna().sum())
+    print(df[column].value_counts(dropna=False))
 
-# Display summary statistics for numerical columns.
-### summary statistics for all columns (categories + counts or min + max + mean + std) 
-print(combined_df.describe())
+    print("Number of missing values:", df[column].isna().sum())
+    print("Number of unique values:", df[column].nunique())
 
-# Display summary statistics for categorical columns.
-# print(combined_df.describe(include=["object"]))
-
-# Display the number of missing values in each column.
-# print(combined_df.isnull().sum())
-
-
-## (process3) Store the concatenated dataset in a new file.
-combined_df.to_csv("data/christchurch_listings_oct2025_jun2026.csv", index = False)
-
-# Check the final dataset.
-# print(combined_df.shape)
-# print(combined_df.head())
-
-
-
-
-## Display a histgram of listing prices up to $1000 in Christchurch.
-## I filtered listings with prices up to $1000, and selected the price column, and created a histgram with 50 bins.
-combined_df[combined_df["price"] <= 1000]["price"].hist(bins = 50)
-
-# Display a histgram of listing prices in Christchurch.
-# combined_df["price"].hist()
-
-# Check summary statistics for price.
-# print(combined_df["price"].describe())
-
-# Display the 20 highest prices. This result shows that the original histogram is distorted by a very small number of extremely expensive listings.
-# print(combined_df["price"].nlargest(20))
-
-plt.xlabel("Price (NZD)")
-plt.ylabel("Frequency")
-plt.title("Price Distribution of Christchurch Listings (<= $1000)")
-plt.show()
+    print("\nCategories and counts:")
+    print(df[column].value_counts(dropna=False))
