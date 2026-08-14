@@ -14,9 +14,11 @@ Tasks:
 """
 
 import pandas as pd
+import matplotlib.pyplot as plt
 
 # October 2025
 # Read the CSV file and store it in a DataFrame called df.
+### downloaded each monthly dataset from October to June.
 oct_df = pd.read_csv("data/listings_2025_10.csv", encoding="latin1")
 
 
@@ -34,11 +36,13 @@ oct_df = pd.read_csv("data/listings_2025_10.csv", encoding="latin1")
 
 
 ## (process1) Filter all dataset to Christchurch City only.
+### load each dataset into Python by using pandas and filtered each dataset, so these dataset only contain Christchurch City data.
 filter_oct_df = oct_df[oct_df["neighbourhood_group"] == "Christchurch City"].copy()
 # print(df.shape)
 # print(filter_oct_df.shape)
 
 # Add a column for the month + year.
+### add a month_year column to each dataset to identify which month each row came from.
 filter_oct_df["month_year"] = "October 2025"
 # Check the new column.
 # print(filter_df["month_year"].head())
@@ -88,6 +92,7 @@ filter_jun_df["month_year"] = "June 2026"
 
 
 ## (process2) Concatenate all filtered monthly datasets into a larger dataset spanning Oct 2025 to June 2026 for Christchurch.
+### combined all nine monthly datasets into one larger dataset.
 combined_df = pd.concat(
     [
         filter_oct_df,
@@ -108,11 +113,15 @@ combined_df = pd.concat(
 # print(combined_df["month_year"].value_counts())
 
 # Remove the license column because all values are missing.
-# The license column contained only missing values, so I removed it because it does not privide  useful information for the analysis.
+### chech which columns have missing value
+print(combined_df.isnull().sum())
+# The license column contained only missing values, so I removed it because it does not privide useful information for the analysis.
+### the license column contained only missing values, so removerd it.
 combined_df = combined_df.drop(columns=["license"])
 
 # Display summary statistics for numerical columns.
-# print(combined_df.describe())
+### summary statistics for all columns (categories + counts or min + max + mean + std) 
+print(combined_df.describe())
 
 # Display summary statistics for categorical columns.
 # print(combined_df.describe(include=["object"]))
@@ -130,7 +139,6 @@ combined_df.to_csv("data/christchurch_listings_oct2025_jun2026.csv", index = Fal
 
 
 
-import matplotlib.pyplot as plt
 
 ## Display a histgram of listing prices up to $1000 in Christchurch.
 ## I filtered listings with prices up to $1000, and selected the price column, and created a histgram with 50 bins.
