@@ -3,11 +3,13 @@ import matplotlib.pyplot as plt
 
 
 # Load data
-df = pd.read_csv('listings1.csv')
+###I loaded the dataset and checked the number of rows and columns.
+df = pd.read_csv('listings1.csv', encoding='latin1')
 print("Rows, cols:", df.shape)
 
 
 # 1. Price distribution histograms
+### Then, I created two price distributions. One shows prices for all New Zealand listings, and the other shows only Christchurch City listings. Because there are some very large price outliers, I used the 99th percentile as an upper limit so that the main distribution is easier to see.
 # Drop missing prices, and clip extreme outliers for a readable plot
 price_all = df['price'].dropna()
 # Filter for Christchurch City listings
@@ -47,6 +49,7 @@ print("Saved price_distribution.png")
 # ---------------------------------------------------------
 # 2. Days since last review
 # ---------------------------------------------------------
+### Next, I analysed the number of days since the last review. I converted the last_review column into a date format and calculated the difference between the reference date and each listing's last review date. Then, I created a histogram to show the distribution.
 # Convert last_review to datetime, coercing errors to NaT (missing)
 df['last_review_dt'] = pd.to_datetime(df['last_review'], errors='coerce')
 
@@ -80,6 +83,7 @@ print("Saved days_since_last_review.png")
 
 
 # 3. Top 10% of properties by number of reviews
+### Finally, I identified the top 10 percent of properties based on the number of reviews. I calculated the 90th percentile as the cutoff and selected listings with review counts equal to or higher than that value. I also saved these listings into a new CSV file for further analysis.
 
 # quantile(0.90) finds the review-count value BELOW which 90% of listings fall
 threshold = df['number_of_reviews'].quantile(0.90)

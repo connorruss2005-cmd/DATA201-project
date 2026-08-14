@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 #for i in range(1, 10):
 #    filename = f"listings{i}.csv"
 #
-#    df = pd.read_csv(filename)
+#    df = pd.read_csv(filename, encoding='latin1')
 #
-#    # Filter for Christchurch City listings
+#   # Filter for Christchurch City listings
 #    df = df[df["neighbourhood_group"] == "Christchurch City"]
 #
 #    # Convert the last_review column to datetime format
