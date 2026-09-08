@@ -6,8 +6,10 @@ import matplotlib.pyplot as plt
 df = pd.read_csv('listings1.csv')
 print("Rows, cols:", df.shape)
 
-
+#---------------------------------
 # 1. Price distribution histograms
+#---------------------------------
+
 # Drop missing prices, and clip extreme outliers for a readable plot
 price_all = df['price'].dropna()
 # Filter for Christchurch City listings
@@ -44,9 +46,9 @@ plt.savefig('price_distribution.png', dpi=150)
 plt.close()
 print("Saved price_distribution.png")
 
-# ---------------------------------------------------------
+#------------------------------
 # 2. Days since last review
-# ---------------------------------------------------------
+
 # Convert last_review to datetime, coercing errors to NaT (missing)
 df['last_review_dt'] = pd.to_datetime(df['last_review'], errors='coerce')
 
