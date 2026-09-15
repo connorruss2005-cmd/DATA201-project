@@ -1,0 +1,9 @@
+Dropped license as it was 100% missing so it was pretty much useless, no consequences from its removal.
+
+Dropped neighbourhood_group as it was only one distinct value for 28,795 rows, only consequence for removing this is losing the city in which that Airbnb is located in.
+
+Dropped month/year as its not a true scrape date column, the original dataset never had one, it was duplicated all from last review, no consequences from this as we still have last_review and it was only a temporary column anyway.
+
+Dropping duplicate rows as they add nothing but double counted weight in any averages, counts, or sums, a consequence could be that these exact duplicate rows couldn't have been redundant copies but it was hard to tell.
+
+Dtype fixes

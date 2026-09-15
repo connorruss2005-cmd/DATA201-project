@@ -31,6 +31,10 @@ text_columns = ['name', 'host_name', 'neighbourhood', 'room_type']
 for col in text_columns:
     df[col] = df[col].str.strip()
 
+#=====5. Convert 'last_review' column to datetime format handle errors by coercing invalid dates.=====
 df['last_review'] = pd.to_datetime(df['last_review'], errors='coerce')
+
+#=====6. Tidy up row order / index.=====
+df = df.sort_values(['id', 'last_review'], na_position='last').reset_index(drop=True)
 
 df.to_csv('Deliverables/combined_Christchurch_listings_cleaned.csv', index=False)
