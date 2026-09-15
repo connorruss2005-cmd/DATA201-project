@@ -95,10 +95,6 @@ cols_to_show = ['id', 'name', 'neighbourhood_group', 'neighbourhood',
                  'room_type', 'price', 'number_of_reviews']
 top10_out = top10[cols_to_show]
 
-# Save the full top-10% list to CSV so it can be explored outside Python
-top10_out.to_csv('top_10pct_most_reviewed.csv', index=False)
-print("Saved top_10pct_most_reviewed.csv")
-
 # Also print just the top 15 to the console as a quick preview.
 print("\nTop 15 most-reviewed listings in NZ:")
 print(top10_out.head(15).to_string(index=False))
