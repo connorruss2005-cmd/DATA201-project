@@ -1,0 +1,20 @@
+﻿Deliverable 4: Rental Bond Dataset Cleaning & Dropped Columns
+
+Dataset Source: Tenancy Services (Detailed quarterly report, 2020-2026)
+
+RETAINED COLUMNS & REASONING:
+- TimeFrame: Required key for temporal alignment with listing dataset.
+- Location ID: Mandatory spatial join key for geographic matching next week.
+- Dwelling Type: Useful categorical filter (e.g., House, Apartment).
+- Number of Beds: Essential property size indicator.
+- Total Bonds / Active Bonds / Closed Bonds: Provides local market supply/volume indicators.
+- Median Rent / Geometric Mean Rent: Key rental pricing metrics for central tendency comparison.
+
+DROPPED COLUMNS & REASONING:
+- Log Std Dev Weekly Rent: Dropped for storage efficiency; variance metrics are not needed for core price/volume comparisons.
+- Upper and Lower Quantile Rent: Dropped to reduce dataset size; Median Rent provides a cleaner, primary measure of central tendency.
+
+DATA SANITISATION & CONSEQUENCES:
+- Cleaned string formatting (stripped '$' and ',' from numeric columns).
+- Filtered timeframe to YYYY-MM-DD quarter-start dates covering 2020-2026.
+- Dropped rows missing crucial join keys (TimeFrame, Location ID).
