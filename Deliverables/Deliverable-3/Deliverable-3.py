@@ -21,19 +21,19 @@ import matplotlib.pyplot as plt
 #    df.to_csv(f"listings_{i}_updated.csv", index=False)
 
 
-#data_sets = []
-#
-#for i in range(1, 10):
-#    filename = f"listings_{i}_updated.csv"
-#    df = pd.read_csv(filename)
-#
-#    # Add the dataframes to an empty list
-#    data_sets.append(df)
-#
-## Concatenate all datasets
-#combined = pd.concat(data_sets, ignore_index=True)
-#
-#combined.to_csv("combined_Christchurch_listings.csv", index=False)
+data_sets = []
+
+for i in range(1, 10):
+    filename = f"listings_{i}_updated.csv"
+    df = pd.read_csv(filename)
+
+    # Add the dataframes to an empty list
+    data_sets.append(df)
+
+# Concatenate all datasets
+combined = pd.concat(data_sets, ignore_index=True)
+
+combined.to_csv("combined_Christchurch_listings.csv", index=False)
 
 
 # Categories: different/unique values in a column

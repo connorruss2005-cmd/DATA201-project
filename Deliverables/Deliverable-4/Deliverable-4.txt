@@ -1,0 +1,12 @@
+Dropped license as it was 100% missing so it was pretty much useless, no consequences from its removal.
+
+Dropped neighbourhood_group as it was only one distinct value for 28,795 rows, only consequence for removing this is losing the city in which that Airbnb is located in.
+
+Dropped month/year as its not a true scrape date column, the original dataset never had one, it was duplicated all from last review, no consequences from this as we still have last_review and it was only a temporary column anyway.
+
+Dropping duplicate rows as they add nothing but double counted weight in any averages, counts, or sums, a consequence could be that these exact duplicate rows couldn't have been redundant.
+
+Dtype fixes for cosmetic fixes and eaiser downstream use (date filtering/storting), a consequence is making host_id an int doesn't stop anyone from accidently averaging it.
+
+Leaving columns (price, last_review, reviews_per_month, minimum_nights, host_name) with some missing values and not imputing, if we fabricate values by imputing it could create bias in future statistics. A consequence of this is say we preform a naive df['price'].mean without skipna=False will silently drop 
+all rows with missing values which could skew the average, so by leaving missing values we would need to account for the missing values as well.

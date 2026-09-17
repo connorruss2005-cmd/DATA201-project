@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 df = pd.read_csv('listings1.csv', encoding='latin1')
 print("Rows, cols:", df.shape)
 
-
+#---------------------------------
 # 1. Price distribution histograms
 ### Then, I created two price distributions. One shows prices for all New Zealand listings, and the other shows only Christchurch City listings. Because there are some very large price outliers, I used the 99th percentile as an upper limit so that the main distribution is easier to see.
 # Drop missing prices, and clip extreme outliers for a readable plot
@@ -46,7 +46,7 @@ plt.savefig('price_distribution.png', dpi=150)
 plt.close()
 print("Saved price_distribution.png")
 
-# ---------------------------------------------------------
+#------------------------------
 # 2. Days since last review
 # ---------------------------------------------------------
 ### Next, I analysed the number of days since the last review. I converted the last_review column into a date format and calculated the difference between the reference date and each listing's last review date. Then, I created a histogram to show the distribution.
@@ -96,10 +96,6 @@ print(f"Number of listings in top 10%: {len(top10)}")
 cols_to_show = ['id', 'name', 'neighbourhood_group', 'neighbourhood',
                  'room_type', 'price', 'number_of_reviews']
 top10_out = top10[cols_to_show]
-
-# Save the full top-10% list to CSV so it can be explored outside Python
-top10_out.to_csv('top_10pct_most_reviewed.csv', index=False)
-print("Saved top_10pct_most_reviewed.csv")
 
 # Also print just the top 15 to the console as a quick preview.
 print("\nTop 15 most-reviewed listings in NZ:")
