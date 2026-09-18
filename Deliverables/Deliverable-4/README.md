@@ -275,13 +275,7 @@ The Airbnb cleaning script expects the combined Christchurch input dataset at:
 ```text
 Deliverables/combined_listings_for_Christchurch/combined_Christchurch_listings.csv
 ```
-
-This input file is not currently stored in the repository. Therefore, a fresh clone cannot currently run `Deliverable-4.py` without first obtaining or generating this input dataset.
-
-This should be resolved or documented before the final project submission so that all team members can reproduce the Airbnb cleaning process.
-
-The raw datasets are not committed unnecessarily to GitHub because of their size. The team should document the agreed method for obtaining the required raw/input data before final submission.
-
+After running this we will get the cleaned data.
 ---
 
 ## 8. Project Structure
@@ -297,13 +291,15 @@ Deliverables/
     ├── cleaned_rental_bond_data.csv
     ├── Deliverable-4.txt
     └── dropped_columns.txt
+└── combined_Christchurch_listings_cleaned.csv
+
 ```
 
 ---
 
 ## 9. Team Contributions
 
-### Member 1 – Airbnb Dataset Cleaning
+### Connor – Airbnb Dataset Cleaning
 
 * Cleaned the Christchurch Airbnb dataset.
 * Reviewed unnecessary and missing columns.
@@ -311,14 +307,14 @@ Deliverables/
 * Removed exact duplicate records.
 * Preserved latitude and longitude.
 
-### Member 2 – Rental Bond Dataset Cleaning
+### Johan – Rental Bond Dataset Cleaning
 
 * Obtained and reviewed the Tenancy Services rental bond dataset.
 * Selected relevant columns.
 * Cleaned numeric and string fields.
 * Prepared the cleaned rental bond dataset.
 
-### Member 3 – Dataset Integration
+### Kaz – Dataset Integration
 
 * Responsible for checking compatibility between the Airbnb and rental bond datasets.
 * Checks timeframe and geographic compatibility.
@@ -327,7 +323,7 @@ Deliverables/
 * We may also need "month_year" column to align the Airbnb data with the quarterly bond data, which may be useful for the next week's work.
 * I also suggested that we drop the "TimeFrame" column from 2020-01-01 to 2025-07-01 as these ranges of data will not be useful when we combine two datasets.
 
-### Member 4 – Documentation and Quality Assurance
+### Kayal – Documentation and Quality Assurance
 
 * Prepared the Deliverable 4 README.
 * Documented dataset sources and cleaning decisions.
