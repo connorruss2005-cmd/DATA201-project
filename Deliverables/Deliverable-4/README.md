@@ -323,6 +323,9 @@ Deliverables/
 * Responsible for checking compatibility between the Airbnb and rental bond datasets.
 * Checks timeframe and geographic compatibility.
 * Prepares the datasets for the next-stage comparison.
+* I suggested we keep "month_year" column not "last leview" column because the latter indicates only the date of the most recent review, not the dataset month.
+* We may also need "month_year" column to align the Airbnb data with the quarterly bond data, which may be useful for the next week's work.
+* I also suggested that we drop the "TimeFrame" column from 2020-01-01 to 2025-07-01 as these ranges of data will not be useful when we combine two datasets.
 
 ### Member 4 – Documentation and Quality Assurance
 
