@@ -1,0 +1,27 @@
+Koordinates API Test - Deliverable 5
+
+Layer ID: 123515
+
+Area code field: SA22026_V1_00
+
+Area name field: SA22026_V1_00_NAME
+
+API endpoint:
+https://datafinder.stats.govt.nz/services/query/v1/vector.json
+
+Test coordinate:
+Latitude: -43.51148
+Longitude: 172.59658
+
+API result:
+SA2 code: 320800
+SA2 name: Bryndwr South
+
+Verification:
+The returned SA2 code (320800) exists in the cleaned Rental Bond dataset.
+
+Number of matching Rental Bond records:
+12
+
+Conclusion:
+The Koordinates API successfully converts an Airbnb latitude/longitude pair to the SA2 2026 area code used by the Rental Bond dataset.
