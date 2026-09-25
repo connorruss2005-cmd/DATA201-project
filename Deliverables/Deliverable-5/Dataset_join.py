@@ -17,6 +17,7 @@ bonds = pd.read_csv(BONDS_PATH)
 # and it turned out to be better than pandas, keeping all rows from the listings dataset and adding the median_rent from the bond dataset where available. I got claude to touch up on the code and
 # make it a lot cleaner and more readable. I also added some summary statistics at the end to show how many rows were matched and unmatched.
 
+# I did a LEFT JOIN because I wanted to keep all the rows from the listings dataset, even if there was no match in the bond dataset. This way, I can see which areas have rental bond data and which don't.
 conn = sqlite3.connect(":memory:") # create an in-memory SQLite database
 listings.to_sql("listings", conn, index=False, if_exists="replace") # create a table for the Airbnb data
 bonds.to_sql("bonds", conn, index=False, if_exists="replace") # create a table for the rental bond data
