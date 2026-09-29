@@ -49,7 +49,3 @@ Key Columns and Definitions
 | 'availability_365' | Integer | Number of days the listing is available for booking within the next 365 days |
 | number_of_reviews_ltm | Integer | Total counts of reviews received in the last twelve months |
 | 'license' | Text | License, permit, or registration number | 
-
-
-
-

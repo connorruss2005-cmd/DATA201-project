@@ -10,6 +10,12 @@
 ## Create a new branch
 - git switch -c (new-branch-name)
 
+## Create a new folder
+- mkdir (new-folder-name)
+
+## Create a new file
+- New-Item (new-file-name + format, such as .txt, .py)
+
 ## Check changes
 - git status
 
@@ -42,4 +48,4 @@
 7. git commit -m "Describe the change"
 8. git push -u origin new-branch-name
 9. Create a Pull Request on GitHub
-10. Merge into main
+10. Merge into main branch
