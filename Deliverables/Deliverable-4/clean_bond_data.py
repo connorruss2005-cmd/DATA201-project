@@ -13,15 +13,6 @@ file_path = (
 raw_bond_df = pd.read_csv(file_path)
 
 
-# ===== CHECK ORIGINAL DATASET =====
-print(f"\n{'=' * 60}")
-print(file_path)
-print(raw_bond_df.columns.tolist())
-print(raw_bond_df["TimeFrame"].value_counts().sort_index())
-print(f"Initial row count: {len(raw_bond_df)}")
-print("=" * 60)
-
-
 # ===== 2. COLUMN STANDARDIZATION =====
 raw_bond_df.columns = raw_bond_df.columns.str.strip()
 
@@ -32,6 +23,15 @@ raw_bond_df.rename(
     },
     inplace=True,
 )
+
+
+# ===== CHECK ORIGINAL DATASET =====
+print(f"\n{'=' * 60}")
+print(file_path)
+print(raw_bond_df.columns.tolist())
+print(raw_bond_df["TimeFrame"].value_counts().sort_index())
+print(f"Initial row count: {len(raw_bond_df)}")
+print("=" * 60)
 
 
 # ===== 3. KEEP COLUMNS NEEDED FOR ANALYSIS =====
@@ -48,6 +48,16 @@ columns_to_keep = [
     "Upper Quartile Rent",
     "Lower Quartile Rent",
 ]
+
+missing_columns = [
+    col for col in columns_to_keep
+    if col not in raw_bond_df.columns
+]
+
+if missing_columns:
+    raise ValueError(
+        f"Missing required columns: {missing_columns}"
+    )
 
 bond_df = raw_bond_df[columns_to_keep].copy()
 
@@ -67,8 +77,6 @@ bond_df["Number Of Beds"] = (
 
 
 # ===== 5. CLEAN LOCATION ID =====
-# Location ID is an identifier, so convert values such as
-# 320800.0 into integer 320800.
 bond_df["Location ID"] = pd.to_numeric(
     bond_df["Location ID"],
     errors="coerce",
@@ -131,7 +139,6 @@ print(
 
 print("\nMissing values per column:")
 print(bond_df.isnull().sum())
-print(bond_df["TimeFrame"].value_counts().sort_index())
 
 print("\nRows per timeframe:")
 print(
@@ -147,7 +154,27 @@ print("\nExample Location IDs:")
 print(bond_df["Location ID"].head())
 
 
-# ===== 10. EXPORT CLEANED DATASET =====
+# ===== 10. SANITY CHECK =====
+assert bond_df["TimeFrame"].isin(target_timeframes).all(), (
+    "Unexpected timeframes remain in the cleaned dataset."
+)
+
+assert bond_df["TimeFrame"].nunique() == 3, (
+    "Not all three required timeframes are present."
+)
+
+assert bond_df["Location ID"].isna().sum() == 0, (
+    "Missing Location IDs remain after cleaning."
+)
+
+assert bond_df["TimeFrame"].isna().sum() == 0, (
+    "Missing TimeFrames remain after cleaning."
+)
+
+print("\nSanity checks passed.")
+
+
+# ===== 11. EXPORT CLEANED DATASET =====
 output_path = (
     BASE_DIR.parent
     / "cleaned_rental_bond_data.csv"
