@@ -13,8 +13,9 @@ bonds = pd.read_csv(BONDS_PATH)
 
 # ===== 2. Performing a left join, area_code on Location ID between the two datasets using SQL =====
 
-# When I did it the first time with pandas merge, I got a lot of rows with no bond data. I realized that the rental bond data has multiple rows per area_code (one for each dwelling type and bed count), 
-# so I need to filter it down to just one row per area_code before joining. I got claude to help me with this.
+# When I did it the first time with pandas merge, I got a lot of rows with no bond data. Becuase some area_codes dont have a match in the bond dataset. So I decided to use SQL to do a left join, 
+# and it turned out to be better than pandas, keeping all rows from the listings dataset and adding the median_rent from the bond dataset where available. I got claude to touch up on the code and
+# make it a lot cleaner and more readable. I also added some summary statistics at the end to show how many rows were matched and unmatched.
 
 conn = sqlite3.connect(":memory:") # create an in-memory SQLite database
 listings.to_sql("listings", conn, index=False, if_exists="replace") # create a table for the Airbnb data
