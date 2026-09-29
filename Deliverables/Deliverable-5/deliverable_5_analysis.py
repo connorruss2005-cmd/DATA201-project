@@ -157,5 +157,3 @@ plot2_top15_path = os.path.join(SCRIPT_DIR, 'property_counts_top15.png')
 plt.savefig(plot2_top15_path, dpi=300)
 plt.close()
 print(f"Saved: {plot2_top15_path}")
-
-print("\nAll 4 charts successfully generated and saved!")
