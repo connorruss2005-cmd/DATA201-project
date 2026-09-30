@@ -17,14 +17,13 @@ bonds = pd.read_csv(BONDS_PATH)
 # and it turned out to be better than pandas, keeping all rows from the listings dataset and adding the median_rent from the bond dataset where available. I got claude to touch up on the code and
 # make it a lot cleaner and more readable. I also added some summary statistics at the end to show how many rows were matched and unmatched.
 
-conn = sqlite3.connect(":memory:") # create an in-memory SQLite database
-listings.to_sql("listings", conn, index=False, if_exists="replace") # create a table for the Airbnb data
-bonds.to_sql("bonds", conn, index=False, if_exists="replace") # create a table for the rental bond data
+connection = sqlite3.connect(":memory:") # create an in-memory SQLite database
+listings.to_sql("listings", connection, index=False, if_exists="replace") # table for the Airbnb data
+bonds.to_sql("bonds", connection, index=False, if_exists="replace") # table for the rental bond data
 
-JOIN_SQL = """
+LEFT_JOIN_SQL = """
 WITH bond_all_rows AS (
-    -- Area-wide overall market stats only (drop the dwelling-type / bed-
-    -- count breakdown rows so each area+quarter is a single row).
+    -- Area-wide overall market stats only (drop the dwelling-type / bed-count breakdown rows so each area+quarter is a single row).
     SELECT
         "Location ID"          AS area_code,
         TimeFrame              AS quarter,
@@ -40,9 +39,8 @@ WITH bond_all_rows AS (
       AND "Number Of Beds" = 'ALL'
 ),
 bond_latest_per_area AS (
-    -- Keep only each area's most recent available quarter -- a "current
-    -- market snapshot" per area. (Falls back to an earlier quarter for the
-    -- handful of areas missing the very latest one.)
+    -- Keep only each area's most recent available quarter a "current market snapshot" per area. (Falls back to an earlier quarter for the
+    handful of areas missing the very latest one.)
     SELECT b1.*
     FROM bond_all_rows b1
     WHERE b1.quarter = (
@@ -67,8 +65,8 @@ LEFT JOIN bond_latest_per_area AS b
 """
 
 # ===== 3. Save the joined dataset to a CSV file =====
-result = pd.read_sql_query(JOIN_SQL, conn)
-conn.close() # close the database connection
+result = pd.read_sql_query(LEFT_JOIN_SQL, connection)
+connection.close() # close the database connection
  
 result.to_csv(OUTPUT_PATH, index=False)
 
@@ -76,6 +74,6 @@ result.to_csv(OUTPUT_PATH, index=False)
 matched = result["median_rent"].notna().sum()
 print(f"Listings in            : {len(listings)}") # Number of rows in the original listings dataset
 print(f"Rows out               : {len(result)}  (should equal listings in)") # Number of rows in the joined dataset (should equal listings in)
-print(f"Rows WITH a bond match : {matched} ({matched/len(result):.1%})") # Number of rows with a matching bond record
-print(f"Rows with NO bond match: {len(result)-matched} ({1-matched/len(result):.1%})  <- area not in bond data at all") # Number of rows without a matching bond record
+print(f"Rows WITH a bond match : {matched_bond_record} ({matched_bond_record/len(result):.1%})") # Number of rows with a matching bond record
+print(f"Rows with NO bond match: {len(result)-matched} ({1-matched_bond_record/len(result):.1%})  <- area not in bond data at all") # Number of rows without a matching bond record
 print(f"Saved to               : {OUTPUT_PATH}")
