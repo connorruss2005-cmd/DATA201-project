@@ -1,0 +1,66 @@
+Member 1 - Data Input & Preparation Review
+
+Files reviewed:
+- Deliverables/Deliverable-4/Deliverable-4.py
+- Deliverables/Deliverable-4/clean_bond_data.py
+
+
+1. Airbnb Data Preparation
+
+Changes:
+- Changed input and output paths to use pathlib.Path.
+- Added validation to check that required columns exist before cleaning.
+- Improved numeric type conversion for integer-like columns.
+- Recorded how many exact duplicate rows were removed.
+- Standardised text columns by removing unnecessary whitespace.
+- Added sanity checks for latitude, longitude, and duplicate rows.
+
+Reasons:
+These changes make the cleaning script more reliable and easier to maintain.
+The column validation helps detect input problems early, while the coordinate
+checks are especially important because latitude and longitude are later used
+for Koordinates API mapping.
+
+The duplicate audit also makes the effect of the cleaning process more
+transparent.
+
+Sanity check result:
+Airbnb sanity checks passed.
+
+
+2. Rental Bond Data Preparation
+
+Changes:
+- Added validation to check that all required columns exist.
+- Converted Location ID to nullable integer type (Int64).
+- Standardised categorical and numeric columns.
+- Filtered the dataset to the three required timeframes.
+- Removed rows with missing TimeFrame or Location ID.
+- Added a cleaning audit and sanity checks before exporting the dataset.
+
+Reasons:
+These changes improve consistency in the Rental Bond dataset and reduce the
+risk of errors later in the pipeline.
+
+Converting Location ID from values such as 320800.0 to 320800 also makes it
+more suitable for matching with the Stats NZ SA2 area codes.
+
+The sanity checks confirm that the required timeframes are present and that
+important key columns do not contain missing values before the cleaned data
+is saved.
+
+Sanity check result:
+Rental Bond sanity checks passed.
+
+
+3. Overall Review
+
+The main improvements focused on:
+- input validation
+- consistent data types
+- reliable file paths
+- clearer documentation of cleaning consequences
+- sanity checks before later pipeline stages
+
+These changes make the data preparation stage more robust and help detect
+problems before API mapping, dataset joining, and analysis.

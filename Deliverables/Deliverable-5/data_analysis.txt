@@ -1,0 +1,28 @@
+Deliverable 5 - Data Analysis
+
+Overview:
+Executed exploratory data analysis (EDA) and generated four presentation-ready visualisations using Python 
+(`pandas` and `matplotlib`) based on the joined AirBnB and 
+Christchurch rental bond dataset 
+
+Key Tasks Completed & Findings:
+
+Question 1: Christchurch Central Median AirBnB Price
+- Filtered dataset for SA2 location code `326600` (Christchurch Central).
+- Calculated and verified the median nightly AirBnB price ($238.00/night).
+
+Question 2: Short-Term vs. Long-Term Nightly Price Gap Analysis
+- Converted weekly rental bond rates (`median_rent`) into equivalent daily rates (`median_rent / 7`).
+- Computed the daily price premium per property (`AirBnB price - Bond daily rate`).
+- Generated two price gap bar charts sorted from largest to smallest difference:
+    - `bar_price_gap_all_areas.png`: Full distribution across all 50+ Christchurch SA2 area codes.
+    - `bar_price_gap_top15.png`: Zoomed-in view of the Top 15 highest-volume areas for slide readability.
+
+Question 3: Housing Market Volume Comparison (AirBnB vs. Active Bonds)
+- Aggregated unique AirBnB listing counts against active tenancy bond records per SA2 area code.
+- Generated two side-by-side grouped bar charts comparing short-term visitor supply against long-term residential housing supply:
+    -`property_counts_all_areas.png`: Full dataset comparison across all 50+ area codes.
+    -`property_counts_top15.png`: Focused comparison of the Top 15 areas highlighting tourist hubs (e.g., Christchurch Central) versus long-term residential/student suburbs (e.g., Upper Riccarton, Addington).
+
+
+

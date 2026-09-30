@@ -1,40 +1,186 @@
 import pandas as pd
+from pathlib import Path
 
-#Clean the Christchurch listing dataset you have created in Deliverable 3. It is up to you to decide what makes sense here. 
-#You are welcome to drop columns if you think they are useless. Please keep latitude and longitude.
-#Document your decisions, the reasons behind your decisions, and the consequences (e.g., number of rows lost due to missing value handling)
 
-df = pd.read_csv('Deliverables/combined_listings_for_Christchurch/combined_Christchurch_listings.csv')
-pd.set_option("display.max_columns", None)
+# Clean the Christchurch listing dataset created in Deliverable 3.
+# Keep latitude and longitude because they are required later for area-code mapping.
+# Document cleaning decisions, reasons, and consequences such as row loss.
 
-#=====1. Dropped unnecessary columns: 'neighbourhood_group', 'license', and 'month/year'.=====
-df.drop(columns=['neighbourhood_group', 
-                 'license', 
-                 'month/year'
-                 ], inplace=True)
 
-#=====2. Converted the following columns to integer type.=====
-df[['host_id', 
-    'calculated_host_listings_count'
-    ]] = df[['host_id', 
-             'calculated_host_listings_count'
-             ]].astype('int64')
+# ===== 1. SETUP & LOAD DATASET =====
+BASE_DIR = Path(__file__).resolve().parent
+PROJECT_DELIVERABLES = BASE_DIR.parent
 
-df['minimum_nights'] = df['minimum_nights'].astype('Int64') 
-#Has a few NA's so convert to nullable integer type.
+input_path = (
+    PROJECT_DELIVERABLES
+    / "combined_Christchurch_listings.csv"
+)
 
-#=====3. Drop exact duplicate rows.=====
-df.drop_duplicates(inplace=True)
+df = pd.read_csv(input_path)
 
-#=====4. Clean up the text columns by stripping any whitespace.=====
-text_columns = ['name', 'host_name', 'neighbourhood', 'room_type']
+initial_rows = len(df)
+
+
+# ===== 2. VALIDATE REQUIRED COLUMNS =====
+required_columns = [
+    "id",
+    "host_id",
+    "latitude",
+    "longitude",
+    "minimum_nights",
+    "name",
+    "host_name",
+    "neighbourhood",
+    "room_type",
+    "last_review",
+    "calculated_host_listings_count",
+]
+
+missing_columns = [
+    col for col in required_columns
+    if col not in df.columns
+]
+
+if missing_columns:
+    raise ValueError(
+        f"Missing required columns: {missing_columns}"
+    )
+
+
+# ===== 3. DROP UNNECESSARY COLUMNS =====
+columns_to_drop = [
+    "neighbourhood_group",
+    "month_year",
+]
+
+df = df.drop(
+    columns=columns_to_drop,
+    errors="ignore",
+)
+
+
+# ===== 4. CONVERT DATA TYPES =====
+df["host_id"] = pd.to_numeric(
+    df["host_id"],
+    errors="coerce",
+).astype("Int64")
+
+df["calculated_host_listings_count"] = pd.to_numeric(
+    df["calculated_host_listings_count"],
+    errors="coerce",
+).astype("Int64")
+
+df["minimum_nights"] = pd.to_numeric(
+    df["minimum_nights"],
+    errors="coerce",
+).astype("Int64")
+
+
+# ===== 5. DROP EXACT DUPLICATES =====
+rows_before_duplicates = len(df)
+
+df = df.drop_duplicates().copy()
+
+duplicate_rows_removed = (
+    rows_before_duplicates - len(df)
+)
+
+
+# ===== 6. CLEAN TEXT COLUMNS =====
+text_columns = [
+    "name",
+    "host_name",
+    "neighbourhood",
+    "room_type",
+]
+
 for col in text_columns:
-    df[col] = df[col].str.strip()
+    df[col] = (
+        df[col]
+        .astype("string")
+        .str.strip()
+    )
 
-#=====5. Convert 'last_review' column to datetime format handle errors by coercing invalid dates.=====
-df['last_review'] = pd.to_datetime(df['last_review'], errors='coerce')
 
-#=====6. Tidy up row order / index.=====
-df = df.sort_values(['id', 'last_review'], na_position='last').reset_index(drop=True)
+# ===== 7. CLEAN DATE COLUMN =====
+df["last_review"] = pd.to_datetime(
+    df["last_review"],
+    errors="coerce",
+)
 
-df.to_csv('Deliverables/combined_Christchurch_listings_cleaned.csv', index=False)
+
+# ===== 8. SORT AND RESET INDEX =====
+df = (
+    df.sort_values(
+        ["id", "last_review"],
+        na_position="last",
+    )
+    .reset_index(drop=True)
+)
+
+
+# ===== 9. SANITY CHECK =====
+assert df["latitude"].notna().all(), (
+    "Missing latitude values remain."
+)
+
+assert df["longitude"].notna().all(), (
+    "Missing longitude values remain."
+)
+
+assert df["latitude"].between(-90, 90).all(), (
+    "Invalid latitude values found."
+)
+
+assert df["longitude"].between(-180, 180).all(), (
+    "Invalid longitude values found."
+)
+
+assert df.duplicated().sum() == 0, (
+    "Exact duplicate rows remain."
+)
+
+print("\nAirbnb sanity checks passed.")
+
+
+# ===== 10. CLEANING AUDIT =====
+print("\n--- Airbnb Data Cleaning Audit ---")
+
+print(f"Initial row count: {initial_rows}")
+
+print(
+    f"Exact duplicate rows removed: "
+    f"{duplicate_rows_removed}"
+)
+
+print(f"Final row count: {len(df)}")
+
+print("\nMissing values per column:")
+print(df.isnull().sum())
+
+print("\nData types:")
+print(df.dtypes)
+
+print("\nExample coordinates:")
+print(
+    df[
+        ["latitude", "longitude"]
+    ].head()
+)
+
+
+# ===== 11. EXPORT CLEANED DATASET =====
+output_path = (
+    PROJECT_DELIVERABLES
+    / "combined_Christchurch_listings_cleaned.csv"
+)
+
+df.to_csv(
+    output_path,
+    index=False,
+)
+
+print(
+    f"\nCleaned dataset saved locally as "
+    f"'{output_path.name}'."
+)
