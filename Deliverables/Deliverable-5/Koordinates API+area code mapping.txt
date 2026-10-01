@@ -1,0 +1,28 @@
+DELIVERABLE 5 - MEMBER 2 HANDOFF
+
+Task completed:
+- Queried Koordinates/Stats NZ SA2 2026 layer using Airbnb latitude/longitude.
+- Added SA2 area_code to all Airbnb listings.
+
+Input:
+- combined_Christchurch_listings_cleaned.csv
+
+Output for Member 3:
+- combined_Christchurch_listings_with_area_codes.csv
+
+Mapping:
+- area_code_mapping.csv
+
+Validation:
+- Original Airbnb rows: 28,390
+- Unique coordinates queried: 3,957
+- Final Airbnb rows: 28,390
+- Missing area codes: 0
+- Final columns: 17
+
+Important columns for Member 3:
+- Airbnb: area_code
+- Rental bond: Location ID
+
+Join:
+- Match Airbnb area_code with rental bond Location ID.
