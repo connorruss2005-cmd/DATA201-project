@@ -1,159 +1,149 @@
-import os
+from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# ===== 1. Locate and Load Dataset =====
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-INPUT_PATH = os.path.join(SCRIPT_DIR, "christchurch_listings_with_rental_bonds_area_only.csv")
+# ==============================================================================
+# CONFIGURATION & AUTOMATED REPOSITORY SEARCH
+# ==============================================================================
+SCRIPT_DIR = Path(__file__).resolve().parent
+REPO_ROOT = SCRIPT_DIR.parents[2]  # C:\Users\liang\Data201_project\DATA201-project
+FILENAME = "christchurch_listings_with_rental_bonds_area_only.csv"
 
-if not os.path.exists(INPUT_PATH):
-    INPUT_PATH = os.path.join(SCRIPT_DIR, "Deliverable-5", "christchurch_listings_with_rental_bonds_area_only.csv")
+# Search recursively within the project folder for the dataset
+found_files = list(REPO_ROOT.rglob(FILENAME))
 
-df = pd.read_csv(INPUT_PATH)
+if not found_files:
+    # Case-insensitive fallback check in case the file extension or name has different casing
+    found_files = [p for p in REPO_ROOT.rglob("*.csv") if "christchurch_listings" in p.name.lower()]
 
-# Clean price column if formatted as currency string
-if df['price'].dtype == object:
-    df['price'] = df['price'].astype(str).str.replace('$', '').str.replace(',', '').astype(float)
+if found_files:
+    INPUT_PATH = found_files[0]
+else:
+    raise FileNotFoundError(
+        f"Could not locate '{FILENAME}' anywhere inside the project folder ({REPO_ROOT}). "
+        "Please check if Deliverable 5's output CSV was generated or moved."
+    )
 
-# Convert weekly bond rent to daily rate
-df['bond_daily_rent'] = df['median_rent'] / 7
-
-# Compute daily price difference ($/night)
-df['price_gap'] = df['price'] - df['bond_daily_rent']
-
-# Focus on Top 15 areas by listing count for zoomed views
-top_areas = df['area_code'].value_counts().head(15).index
-filtered_df = df[df['area_code'].isin(top_areas)].copy()
-
+OUTPUT_DIR = INPUT_PATH.parent
 
 # ==============================================================================
-# QUESTION 1: Median AirBnB Price in Christchurch Central (326600)
+# SANITY CHECK & DATA LOADING
 # ==============================================================================
-central_df = df[df['area_code'] == 326600]
-median_central_price = central_df['price'].median()
+def load_and_validate_data(file_path: Path) -> pd.DataFrame:
+    """Loads input CSV, cleans numeric types, filters invalid rows, and runs sanity assertions."""
+    assert file_path.exists(), f"Error: Input file does not exist at {file_path}"
+    
+    df = pd.read_csv(file_path)
+    
+    # 1. Non-empty check
+    assert not df.empty, "Error: Loaded dataset is empty."
+    
+    # 2. Required columns check
+    required_cols = {'price', 'median_rent', 'area_code'}
+    assert required_cols.issubset(df.columns), f"Error: Missing required columns. Needed: {required_cols}"
+    
+    # Clean price column if formatted as currency string
+    if df['price'].dtype == object:
+        df['price'] = df['price'].astype(str).str.replace('$', '', regex=False).str.replace(',', '', regex=False).astype(float)
 
-print("\n--- QUESTION 1 RESULTS ---")
-print(f"Median AirBnB Price in Christchurch Central (326600): ${median_central_price:.2f}")
+    # Sanity Check & Data Filtering for Non-Positive Prices
+    initial_count = len(df)
+    df = df[(df['price'] > 0) & (df['median_rent'] > 0)].copy()
+    dropped_count = initial_count - len(df)
+    
+    if dropped_count > 0:
+        print(f"⚠️ Sanity Audit: Dropped {dropped_count} row(s) with non-positive or zero prices.")
 
+    # 3. Post-filtering assertion check
+    assert (df['price'] > 0).all(), "Error: Dataset still contains non-positive values in 'price'."
+    assert (df['median_rent'] > 0).all(), "Error: Dataset still contains non-positive values in 'median_rent'."
 
-# ==============================================================================
-# QUESTION 2A / GRAPH 1A: Price Gap (ALL 50+ SA2 Area Codes)
-# ==============================================================================
-gap_all = (
-    df.groupby('area_code')['price_gap']
-    .median()
-    .reset_index()
-    .sort_values(by='price_gap', ascending=False)
-)
-
-plt.figure(figsize=(16, 6))
-plt.bar(
-    [str(int(a)) for a in gap_all['area_code']], 
-    gap_all['price_gap'], 
-    color='#2b5c8f', 
-    edgecolor='black', 
-    alpha=0.85
-)
-
-plt.title('Median Nightly Price Gap (AirBnB Rate - Long-Term Rent) - All Christchurch Areas', fontsize=12, fontweight='bold')
-plt.xlabel('Location ID (SA2 Area Code)', fontsize=10)
-plt.ylabel('Median Price Gap ($ / Night)', fontsize=10)
-plt.xticks(rotation=90, fontsize=8)
-plt.grid(axis='y', linestyle='--', alpha=0.5)
-plt.tight_layout()
-
-plot1_all_path = os.path.join(SCRIPT_DIR, 'bar_price_gap_all_areas.png')
-plt.savefig(plot1_all_path, dpi=300)
-plt.close()
-print(f"Saved: {plot1_all_path}")
-
+    # Feature Engineering
+    df['bond_daily_rent'] = df['median_rent'] / 7
+    df['price_gap'] = df['price'] - df['bond_daily_rent']
+    
+    print(f"✓ Sanity Check Passed: Data successfully loaded and validated ({len(df)} valid records).")
+    return df
 
 # ==============================================================================
-# QUESTION 2B / GRAPH 1B: Price Gap (Top 15 Area Codes)
+# REUSABLE PLOTTING HELPER FUNCTIONS
 # ==============================================================================
-gap_top15 = (
-    filtered_df.groupby('area_code')['price_gap']
-    .median()
-    .reset_index()
-    .sort_values(by='price_gap', ascending=False)
-)
+def plot_price_gap(df: pd.DataFrame, title_suffix: str, output_path: Path, top_n: int = None) -> None:
+    """Generates and saves a bar chart representing median nightly price gap per SA2 area."""
+    if top_n:
+        top_areas = df['area_code'].value_counts().head(top_n).index
+        df = df[df['area_code'].isin(top_areas)]
+        
+    gap_df = (
+        df.groupby('area_code')['price_gap']
+        .median()
+        .reset_index()
+        .sort_values(by='price_gap', ascending=False)
+    )
 
-plt.figure(figsize=(12, 5))
-plt.bar(
-    [f"Area {int(a)}" for a in gap_top15['area_code']], 
-    gap_top15['price_gap'], 
-    color='#2b5c8f', 
-    edgecolor='black', 
-    alpha=0.85
-)
+    labels = [f"Area {int(a)}" if top_n else str(int(a)) for a in gap_df['area_code']]
+    
+    plt.figure(figsize=(12 if top_n else 16, 6))
+    plt.bar(labels, gap_df['price_gap'], color='#2b5c8f', edgecolor='black', alpha=0.85)
+    plt.title(f'Median Nightly Price Gap (AirBnB Rate - Long-Term Rent) - {title_suffix}', fontsize=12, fontweight='bold')
+    plt.xlabel('Location ID (SA2 Area Code)', fontsize=10)
+    plt.ylabel('Median Price Gap ($ / Night)', fontsize=10)
+    plt.xticks(rotation=45 if top_n else 90, ha='right' if top_n else 'center', fontsize=8)
+    plt.grid(axis='y', linestyle='--', alpha=0.5)
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300)
+    plt.close()
+    print(f"Saved plot: {output_path.name}")
 
-plt.title('Median Nightly Price Gap (AirBnB Rate - Long-Term Rent) - Top 15 Areas', fontsize=12, fontweight='bold')
-plt.xlabel('Location ID (SA2 Area Code)', fontsize=10)
-plt.ylabel('Median Price Gap ($ / Night)', fontsize=10)
-plt.xticks(rotation=45, ha='right')
-plt.grid(axis='y', linestyle='--', alpha=0.5)
-plt.tight_layout()
 
-plot1_top15_path = os.path.join(SCRIPT_DIR, 'bar_price_gap_top15.png')
-plt.savefig(plot1_top15_path, dpi=300)
-plt.close()
-print(f"Saved: {plot1_top15_path}")
+def plot_listing_volumes(df: pd.DataFrame, title_suffix: str, output_path: Path, top_n: int = None) -> None:
+    """Generates and saves a grouped bar chart comparing AirBnB counts vs Active Bonds."""
+    if top_n:
+        top_areas = df['area_code'].value_counts().head(top_n).index
+        df = df[df['area_code'].isin(top_areas)]
 
+    counts = df.groupby('area_code').agg(
+        airbnb_count=('id', 'nunique') if 'id' in df.columns else ('price', 'count'),
+        active_bonds=('active_bonds', 'first')
+    ).reset_index()
+
+    fig, ax = plt.subplots(figsize=(12 if top_n else 16, 6))
+    x_coords = range(len(counts))
+    width = 0.35
+
+    ax.bar([i - width/2 for i in x_coords], counts['airbnb_count'], width=width, label='AirBnB Listings', color='#ff5a5f')
+    ax.bar([i + width/2 for i in x_coords], counts['active_bonds'], width=width, label='Active Rental Bonds', color='#00a699')
+
+    labels = [f"Area {int(a)}" if top_n else str(int(a)) for a in counts['area_code']]
+    ax.set_xticks(x_coords)
+    ax.set_xticklabels(labels, rotation=45 if top_n else 90, ha='right' if top_n else 'center', fontsize=8)
+    ax.set_ylabel('Property Count', fontsize=10)
+    ax.set_xlabel('Location ID (SA2 Area Code)', fontsize=10)
+    ax.set_title(f'Listing Volume: AirBnBs vs. Long-Term Rental Bonds ({title_suffix})', fontweight='bold')
+    ax.legend()
+    ax.grid(axis='y', linestyle='--', alpha=0.5)
+
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300)
+    plt.close()
+    print(f"Saved plot: {output_path.name}")
 
 # ==============================================================================
-# QUESTION 3A / GRAPH 2A: Listing Volume (ALL 50+ SA2 Area Codes)
+# MAIN EXECUTION PIPELINE
 # ==============================================================================
-counts_all = df.groupby('area_code').agg(
-    airbnb_count=('id', 'nunique') if 'id' in df.columns else ('price', 'count'),
-    active_bonds=('active_bonds', 'first')
-).reset_index()
+if __name__ == "__main__":
+    df = load_and_validate_data(INPUT_PATH)
 
-fig, ax = plt.subplots(figsize=(16, 6))
-x_all = range(len(counts_all))
-width = 0.35
+    # Question 1: Christchurch Central Median Price
+    central_df = df[df['area_code'] == 326600]
+    median_central_price = central_df['price'].median()
+    print("\n--- QUESTION 1 RESULTS ---")
+    print(f"Median AirBnB Price in Christchurch Central (326600): ${median_central_price:.2f}\n")
 
-ax.bar([i - width/2 for i in x_all], counts_all['airbnb_count'], width=width, label='AirBnB Listings', color='#ff5a5f')
-ax.bar([i + width/2 for i in x_all], counts_all['active_bonds'], width=width, label='Active Rental Bonds', color='#00a699')
+    # Question 2: Price Gap Visualizations
+    plot_price_gap(df, "All Christchurch Areas", OUTPUT_DIR / 'bar_price_gap_all_areas.png')
+    plot_price_gap(df, "Top 15 Areas", OUTPUT_DIR / 'bar_price_gap_top15.png', top_n=15)
 
-ax.set_xticks(x_all)
-ax.set_xticklabels([str(int(a)) for a in counts_all['area_code']], rotation=90, fontsize=8)
-ax.set_ylabel('Property Count', fontsize=10)
-ax.set_xlabel('Location ID (SA2 Area Code)', fontsize=10)
-ax.set_title('Listing Volume: AirBnBs vs. Long-Term Rental Bonds (All Christchurch Areas)', fontweight='bold')
-ax.legend()
-ax.grid(axis='y', linestyle='--', alpha=0.5)
-
-plt.tight_layout()
-plot2_all_path = os.path.join(SCRIPT_DIR, 'property_counts_all_areas.png')
-plt.savefig(plot2_all_path, dpi=300)
-plt.close()
-print(f"Saved: {plot2_all_path}")
-
-
-# ==============================================================================
-# QUESTION 3B / GRAPH 2B: Listing Volume (Top 15 Area Codes)
-# ==============================================================================
-counts_top15 = filtered_df.groupby('area_code').agg(
-    airbnb_count=('id', 'nunique') if 'id' in filtered_df.columns else ('price', 'count'),
-    active_bonds=('active_bonds', 'first')
-).reset_index()
-
-fig, ax = plt.subplots(figsize=(12, 5))
-x_top = range(len(counts_top15))
-
-ax.bar([i - width/2 for i in x_top], counts_top15['airbnb_count'], width=width, label='AirBnB Listings', color='#ff5a5f')
-ax.bar([i + width/2 for i in x_top], counts_top15['active_bonds'], width=width, label='Active Rental Bonds', color='#00a699')
-
-ax.set_xticks(x_top)
-ax.set_xticklabels([f"Area {int(a)}" for a in counts_top15['area_code']], rotation=45, ha='right')
-ax.set_ylabel('Property Count', fontsize=10)
-ax.set_xlabel('Location ID (SA2 Area Code)', fontsize=10)
-ax.set_title('Listing Volume: AirBnBs vs. Long-Term Rental Bonds (Top 15 Areas)', fontweight='bold')
-ax.legend()
-ax.grid(axis='y', linestyle='--', alpha=0.5)
-
-plt.tight_layout()
-plot2_top15_path = os.path.join(SCRIPT_DIR, 'property_counts_top15.png')
-plt.savefig(plot2_top15_path, dpi=300)
-plt.close()
-print(f"Saved: {plot2_top15_path}")
+    # Question 3: Listing Volume Visualizations
+    plot_listing_volumes(df, "All Christchurch Areas", OUTPUT_DIR / 'property_counts_all_areas.png')
+    plot_listing_volumes(df, "Top 15 Areas", OUTPUT_DIR / 'property_counts_top15.png', top_n=15)
