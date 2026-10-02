@@ -1,0 +1,97 @@
+Member 1 - Data Input & Preparation Review
+
+Files reviewed:
+- Deliverables/Deliverable-4/Deliverable-4.py
+- Deliverables/Deliverable-4/clean_bond_data.py
+
+
+1. Airbnb Data Preparation
+Changes:
+- Changed input and output paths to use pathlib.Path.
+- Added validation to check that required columns exist before cleaning.
+- Improved numeric type conversion for integer-like columns.
+- Recorded how many exact duplicate rows were removed.
+- Standardised text columns by removing unnecessary whitespace.
+- Added sanity checks for latitude, longitude, and duplicate rows.
+
+Reasons:
+These changes make the cleaning script more reliable and easier to maintain.
+The column validation helps detect input problems early, while the coordinate
+checks are especially important because latitude and longitude are later used
+for Koordinates API mapping.
+
+The duplicate audit also makes the effect of the cleaning process more
+transparent.
+
+Sanity check result:
+Airbnb sanity checks passed.
+
+2. Rental Bond Data Preparation
+Changes:
+- Added validation to check that all required columns exist.
+- Converted Location ID to nullable integer type (Int64).
+- Standardised categorical and numeric columns.
+- Filtered the dataset to the three required timeframes.
+- Removed rows with missing TimeFrame or Location ID.
+- Added a cleaning audit and sanity checks before exporting the dataset.
+
+Reasons:
+These changes improve consistency in the Rental Bond dataset and reduce the
+risk of errors later in the pipeline.
+
+Converting Location ID from values such as 320800.0 to 320800 also makes it
+more suitable for matching with the Stats NZ SA2 area codes.
+
+The sanity checks confirm that the required timeframes are present and that
+important key columns do not contain missing values before the cleaned data
+is saved.
+
+Sanity check result:
+Rental Bond sanity checks passed.
+
+3. Overall Review
+The main improvements focused on:
+- input validation
+- consistent data types
+- reliable file paths
+- clearer documentation of cleaning consequences
+- sanity checks before later pipeline stages
+
+These changes make the data preparation stage more robust and help detect
+problems before API mapping, dataset joining, and analysis.
+
+Member 2 – Changes & Reasons
+
+Made the API request reusable → to avoid repeating the same code.
+Added a function description (docstring) → so it is clear what the function does.
+Added checks for the mapping file → to make sure the required columns are present.
+Added a missing-area-code check → to prevent incomplete data from continuing.
+Added merge validation → to make sure the merge does not create unexpected duplicates.
+Added a row-count check → to make sure no Airbnb listings are lost or duplicated.
+Added a final missing-value check → to confirm every listing has an area code.
+Kept the API key in an environment variable → to protect the key and avoid exposing it in the code.
+
+Sanity Check
+
+3,957 unique coordinates → expected 3,957 mappings.
+Missing area codes = 0 → every coordinate received an SA2 area code.
+Final rows = 28,390 → no listings were lost or duplicated.
+Final columns = 17 → the area_code column was successfully added.
+
+Member 3:
+
+Updated the file paths for the input and output datasets.
+Added a set called VALID_BOND_QUARTERS which stores the start of 3 valid yearly quarters as a datetime string, these are the most recent three quarters of bond data available in the dataset.
+
+Changed the assigned variable connection from connc to connection as it didn't explain what it was very well.
+
+Added comments to give information on where the sanity checks start.
+
+Deleted import os as it was unnecessary and wasn't being used.
+
+Sanity checks done for the Output dataset (merged dataset):
+ - Fan out prevention, as joining two or more datasets against a duplicated per-area look up should never create extra rows
+ - Primary/key columns must never be null, a null in a Primary column would mean the join silently corrupted or dropped identifying information.
+ - Match rate, Match rate should land around about 70 - 85 percent (Which was 78%, and null values was 22%) a big deviation signals a key mismatch. The reason it isn't 100% is because some    area codes in the listings dataset don't have a match in the bond dataset, which is expected. 
+ - Valid Bond data Quarters, Every non-null bond_data_quarter must be one of the kown valid quarters in the set VALID_BOND_QUARTERS-- catches silent corruption/mis-parsing of the quarter column.
+ - Positive Rent column values, Rent columns should be non-negative, and finite (negative values would be nonsensical)
