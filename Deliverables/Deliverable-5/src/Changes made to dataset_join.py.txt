@@ -7,7 +7,7 @@ Added comments to give information on where the sanity checks start.
 
 Deleted import os as it was unnecessary and wasn't being used.
 
-Sanity checks done:
+Sanity checks done for the Output dataset (merged dataset):
  - Fan out prevention, as joining two or more datasets against a duplicated per-area look up should never create extra rows
  - Primary/key columns must never be null, a null in a Primary column would mean the join silently corrupted or dropped identifying information.
  - Match rate, Match rate should land around about 70 - 85 percent (Which was 78%, and null values was 22%) a big deviation signals a key mismatch. The reason it isn't 100% is because some    area codes in the listings dataset don't have a match in the bond dataset, which is expected. 
