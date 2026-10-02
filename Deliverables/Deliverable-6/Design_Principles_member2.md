@@ -34,8 +34,6 @@
 * Check for missing values.
 * Validate data merges to make sure they work as expected.
 
-These practices make the code easier to understand, check and maintain.
-
 ## AI Used
 
 ChatGPT (Kayal)
