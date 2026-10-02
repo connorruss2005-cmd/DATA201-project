@@ -1,4 +1,3 @@
-import os
 import pandas as pd
 import sqlite3
 
@@ -9,7 +8,7 @@ LISTINGS_PATH = "Deliverables/Deliverable-5/Data/Airbnb listings with area codes
 BONDS_PATH = "Deliverables/Deliverable-5/Data/cleaned input data/cleaned_rental_bond_data.csv"
 OUTPUT_PATH = "Deliverables/Deliverable-5/Output/Merged dataset/christchurch_listings_with_rental_bonds_area_only.csv"
 
-VALID_BOND_QUARTERS = {"2025-10-01", "2026-01-01", "2026-04-01"}
+VALID_BOND_QUARTERS = {"2025-10-01", "2026-01-01", "2026-04-01"} # The most recent three quarters of bond data available in the dataset. 
 
 # ===== 2. Performing a left join, area_code on Location ID between the two datasets using SQL =====
 
@@ -114,7 +113,7 @@ print("All sanity checks passed.")
 result.to_csv(OUTPUT_PATH, index=False)
 
 
-# ===== 4. Print some summary statistics =====
+# ===== 3. Print some summary statistics =====
 matched = result["median_rent"].notna().sum()
 print(f"Listings in            : {len(listings)}") # Number of rows in the original listings dataset
 print(f"Rows out               : {len(result)}  (should equal listings in)") # Number of rows in the joined dataset (should equal listings in)

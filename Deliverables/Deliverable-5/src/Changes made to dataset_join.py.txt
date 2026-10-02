@@ -1,0 +1,15 @@
+Updated the file paths for the input and output datasets.
+Added a set called VALID_BOND_QUARTERS which stores the start of 3 valid yearly quarters as a datetime string, these are the most recent three quarters of bond data available in the dataset.
+
+Changed the assigned variable connection from connc to connection as it didn't explain what it was very well.
+
+Added comments to give information on where the sanity checks start.
+
+Deleted import os as it was unnecessary and wasn't being used.
+
+Sanity checks done for the Output dataset (merged dataset):
+ - Fan out prevention, as joining two or more datasets against a duplicated per-area look up should never create extra rows
+ - Primary/key columns must never be null, a null in a Primary column would mean the join silently corrupted or dropped identifying information.
+ - Match rate, Match rate should land around about 70 - 85 percent (Which was 78%, and null values was 22%) a big deviation signals a key mismatch. The reason it isn't 100% is because some    area codes in the listings dataset don't have a match in the bond dataset, which is expected. 
+ - Valid Bond data Quarters, Every non-null bond_data_quarter must be one of the kown valid quarters in the set VALID_BOND_QUARTERS-- catches silent corruption/mis-parsing of the quarter column.
+ - Positive Rent column values, Rent columns should be non-negative, and finite (negative values would be nonsensical)
