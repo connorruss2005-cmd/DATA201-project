@@ -4,21 +4,21 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Iterate through the 9 listings files
-#for i in range(1, 10):
-#    filename = f"listings{i}.csv"
-#
-#    df = pd.read_csv(filename, encoding='latin1')
-#
-#   # Filter for Christchurch City listings
-#    df = df[df["neighbourhood_group"] == "Christchurch City"]
-#
-#    # Convert the last_review column to datetime format
-#    df["last_review"] = pd.to_datetime(df["last_review"])
-#    
-#    # Add a new column for month/year of the last review
-#    df["month/year"] = df["last_review"].dt.to_period("M")
-#
-#    df.to_csv(f"listings_{i}_updated.csv", index=False)
+for i in range(1, 10):
+    filename = f"listings{i}.csv"
+
+    df = pd.read_csv(filename, encoding='latin1')
+
+   # Filter for Christchurch City listings
+    df = df[df["neighbourhood_group"] == "Christchurch City"]
+
+    # Convert the last_review column to datetime format
+    df["last_review"] = pd.to_datetime(df["last_review"])
+    
+    # Add a new column for month/year of the last review
+    df["month/year"] = df["last_review"].dt.to_period("M")
+
+    df.to_csv(f"listings_{i}_updated.csv", index=False)
 
 
 data_sets = []
