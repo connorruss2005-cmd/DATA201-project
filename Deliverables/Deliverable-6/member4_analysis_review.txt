@@ -1,0 +1,55 @@
+Deliverable 6: Code Refactoring & Pipeline Design Principles Summary (Member 4)
+
+Part 1: Analysis Pipeline 1 — deliverable_3_analysis.py
+(Refactored from Deliverable-3-workflow.py)
+
+1. High-Level Summary of Changes & Reasons
+- Cross-Platform Path Resolution (pathlib.Path)
+- Modularization & DRY Principles
+- Execution Safety
+ 
+- Changes:
+  - Replaced string file path ('listings1.csv) with pathlib.Path
+  - Refactored linear top-to-bottom script code into single responsibility functions
+  - Wrapped execution steps inside an if __name__ = '__main__': entry point guard.
+
+- Reasons:
+  - ensures the script automatically locates the dataset anywhere in the project tree across Windows, macOS, and Linux without throw-on-missing file errors
+  - Improves readability, separates data loading from visualization, and makes individual steps reusable and testable
+  - Prevents accidental execution of plotting routines when functions are imported into other scripts
+
+2. Sanity Checking Example
+- Audit Result: Verifies input columns are present and catches malformed currency values or negative entries before running distribution histograms.
+
+3. Pipeline Design Principles (deliverable_3_analysis.py)
+- Inputs: Raw Inside Airbnb dataset (listings1.csv) containing property prices, geographic wards, review recency dates, and review counts.
+- Outputs:
+  - price_distribution.png
+  - days_since_last_review.png
+  - top_10_percent_reviewed_listings.csv
+
+
+Part 2: Analysis Pipeline 2 — deliverable_5_analysis.py
+
+1. High-Level Summary of Changes & Reasons
+
+- Changes: 
+- Defensive Data Filtering & Audit Logging:
+- Refactoring Plotting Routines:
+- Subfolder Pathing Resolution:
+
+- Reasons:
+  - Identified invalid $0 price listings during sanity checks
+  - Eliminated duplicated code between "All Areas" and "Top 15 Areas" chart generation, maintaining consistent figure styling and labels
+  - Resolves path-stacking errors when executing
+
+2. Sanity Checking Example
+- Audit Result: Successfully caught $0 values in raw merged output and safely removed them before plotting median price gap differences.
+
+3. Pipeline Design Principles (deliverable_5_analysis.py)
+- Inputs: Merged analysis CSV containing matched Airbnb listing prices (price) and Tenancy Services Bond data (median_rent) mapped by area code (area_code).
+- Outputs:
+  - price_gap_all_areas.png & price_gap_top15.png
+  - listing_volumes_all_areas.png & listing_volumes_top15.png
+
+
