@@ -3,6 +3,7 @@ import pandas as pd
 
 from airbnb_cleaning import clean_airbnb
 from query_api import add_area_codes
+import time
 
 
 # ============================================================
@@ -76,11 +77,20 @@ print(
 assert len(mapped_df) == len(test_df)
 assert mapped_df["area_code"].notna().all()
 
-print("API mapping test passed.")
+print("\nChecking API mapping", end="", flush=True)
+
+for _ in range(3):
+    time.sleep(1.0)
+    print(".", end="", flush=True)
+
+print("\n✓ API mapping test passed!")
+print("  All sampled listings were mapped successfully.")
 
 
 # ============================================================
 # 4. FINAL CHECK
 # ============================================================
 
-print("\nMember 2 integration test passed.")
+print("\n" + "=" * 45)
+print("✓ Member 2 integration test passed!")
+print("=" * 45)
