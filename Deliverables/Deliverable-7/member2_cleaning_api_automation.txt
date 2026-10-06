@@ -1,0 +1,91 @@
+Member 2 - Data Cleaning & API Automation
+
+Files created:
+- src/airbnb_cleaning.py
+- src/query_api.py
+- src/test_member2.py
+
+
+1. Airbnb Cleaning Automation
+
+- Converted the existing Airbnb cleaning process into a reusable function:
+  clean_airbnb(df)
+
+- The function receives a DataFrame instead of reading a fixed file directly.
+
+- Kept the month_year column so that new monthly datasets can be identified
+  after cleaning.
+
+- Added validation for required columns.
+
+- Standardised numeric and text columns.
+
+- Added checks for:
+  - missing latitude/longitude
+  - invalid coordinate ranges
+  - duplicate rows
+
+Reason:
+The cleaning process can now be reused automatically for future monthly
+Airbnb datasets without manually changing file paths or code.
+
+
+2. Koordinates API Automation
+
+- Converted the existing area-code mapping process into reusable functions:
+  get_area_code()
+  add_area_codes()
+
+- Existing area-code mappings can be reused.
+
+- Only coordinates that have not already been mapped are sent to the
+  Koordinates API.
+
+- Existing mappings with missing area codes are treated as incomplete
+  and can be queried again.
+
+- Removed the fixed 28,390-row check from Deliverable 5.
+
+- The new version checks that the row count before and after mapping
+  remains the same.
+
+Reason:
+The API mapping can now work with datasets of different sizes, including
+new monthly Airbnb data, without manually changing the code.
+
+
+3. Integration Test
+
+Tested the cleaning and API mapping functions together using the existing
+Airbnb dataset.
+
+Results:
+- Original rows: 28,795
+- Cleaning completed successfully
+- Missing latitude values: 0
+- Missing longitude values: 0
+
+API mapping test:
+- Test rows: 100
+- Unique coordinates queried: 14
+- Rows before mapping: 100
+- Rows after mapping: 100
+- Missing area codes: 0
+
+Result:
+Member 2 integration test passed.
+
+
+4. Remaining Task
+
+The automation has been tested successfully with the existing Airbnb data.
+
+The final test will be performed when the July and August 2026 data from
+Member 1 are available.
+
+The final check should confirm that:
+- July 2026 and August 2026 remain after cleaning
+- new coordinates are mapped automatically
+- existing mappings are reused where possible
+- no Airbnb rows are lost during mapping
+- no area codes are missing

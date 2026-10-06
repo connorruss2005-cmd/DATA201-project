@@ -1,0 +1,166 @@
+## Member 2 – Reviewed Koordinate API and SA2 Area-Code Mapping
+
+
+### Changes made during the Deliverable 5 code review
+
+### 1. API request code review
+
+**Before: **
+Initially the Koordinates API request was written separately for API test, and similar request, logic was written inside the `get_area_code()` function.
+
+**After:**
+I have changed code so that API request will be handled via reusable "get_area_code()" function. The function will also be used for the initial API test.
+
+**Why:**
+By doing this, will remove the duplicate API request code and makes easier to maintain the code and increases reusablility.
+
+---
+
+### 2.API function Documentation
+
+**Before:**
+The `get_area_code()` function did not have a docstring explaining what the function does or what its inputs and output are.
+
+**After:**
+I added a docstring describing the purpose of the function, its latitude and longitude inputs, the retry parameter, and the area-code output.
+
+**Why:**
+This makes the code easier for other team members to understand and maintain.
+
+---
+
+### 3. Validation of the existing mapping
+
+**Before:**
+If an existing `area_code_mapping.csv` file was found, the code loaded it and continued without checking whether it contained the expected columns.
+
+**After:**
+I added a validation check to confirm that the mapping contains the required `latitude`, `longitude`, and `area_code` columns.
+
+**Why:**
+This helps detect an incomplete or incorrectly structured mapping file before it is used in the pipeline.
+
+---
+
+### 4. Checking for missing area codes
+
+**Before:**
+The code printed the number of missing area codes, but it could continue even if some coordinates had not been assigned an area code.
+
+**After:**
+I added a check that stops the pipeline if any area codes are missing.
+
+**Why:**
+Every unique Airbnb coordinate needs an SA2 area code before the data is merged. Stopping the pipeline prevents incomplete results from being passed to the next stage.
+
+---
+
+### 5. Merge validation
+
+**Before:**
+The Airbnb dataset was merged with the area-code mapping using a normal `left` merge:
+
+```python
+df = df.merge(
+    unique_coords,
+    on=["latitude", "longitude"],
+    how="left"
+)
+```
+
+There was no validation of the expected relationship between the two datasets.
+
+**After:**
+I added:
+
+```python
+validate="many_to_one"
+```
+
+to the merge.
+
+**Why:**
+There can be many Airbnb listings with the same latitude and longitude, but each unique coordinate should correspond to one area code. The validation helps identify unexpected duplicate mappings.
+
+---
+
+### 6. Final row-count check
+
+**Before:**
+The code printed the final number of Airbnb rows after the merge, but it did not automatically check whether the row count had changed unexpectedly.
+
+**After:**
+I added a check that raises an error if the final number of rows is not 28,390.
+
+**Why:**
+The merge should add the area-code information without changing the number of Airbnb listings. This check helps detect unexpected record loss or duplication.
+
+---
+
+### 7. Final missing-value check
+
+**Before:**
+The code printed the number of missing area codes after the merge.
+
+**After:**
+I changed this into a validation check that stops the pipeline if any final Airbnb listing has a missing area code.
+
+**Why:**
+This ensures that the final dataset passed to the next stage contains a valid area code for every Airbnb listing.
+
+---
+
+### 8. API key handling
+
+**Before:**
+The API key was already being obtained from an environment variable rather than being hardcoded in the Python script.
+
+**After:**
+I kept this approach unchanged:
+
+```python
+API_KEY = os.getenv("KOORDINATES_API_KEY")
+```
+
+**Why:**
+This was already a good practice because the API key should not be stored directly in the source code. Therefore, no change was needed here.
+
+---
+
+### 9. Retry handling
+
+**Before:**
+The code already had retry handling for failed API requests.
+
+**After:**
+I kept the existing retry mechanism rather than changing it.
+
+**Why:**
+The existing approach was already useful for handling temporary API or network failures. During the updated test, one coordinate required a retry, after which the request succeeded.
+
+---
+
+## Sanity check
+
+After making the changes, I ran the complete pipeline.
+
+The results were:
+
+| Check                              |      Result |
+| ---------------------------------- | ----------: |
+| Airbnb records before processing   |      28,390 |
+| Unique coordinates                 |       3,957 |
+| Test area code                     |      320800 |
+| Unique coordinates with area codes |       3,957 |
+| Missing area codes in mapping      |           0 |
+| Airbnb records after merge         |      28,390 |
+| Missing area codes after merge     |           0 |
+| Final dataset                      | 28,390 × 17 |
+
+The test coordinate `(-43.51148, 172.59658)` returned the SA2 area code `320800`.
+
+The final row count remained 28,390 and there were zero missing area codes. This indicates that the mapping and merge steps completed successfully without unexpected record loss or duplication.
+
+One API request required a retry during processing, demonstrating that the retry handling was useful in dealing with a temporary request failure.
+
+
