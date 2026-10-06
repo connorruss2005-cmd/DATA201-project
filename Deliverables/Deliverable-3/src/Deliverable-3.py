@@ -9,6 +9,9 @@
 # Any new listing.csv file must be in the Deliverable-3/Data/ directory, and the script will automatically detect it and process it. The output will be saved in Deliverable-3/Output/Updated_listings/ and Deliverable-3/Output/combined_listings_for_Christchurch/.
 # The function that handles the processing is preprocess_new_months(), which is called at the end of the script. It will discover all the listings files, preprocess them, and combine them into one dataset. It will also print some summary statistics about the combined dataset.
 
+# From the command line (make sure you are in the correct directory) run:
+# python Deliverables/Deliverable-3/src/Deliverable-3.py
+
 from __future__ import annotations
 
 import argparse
