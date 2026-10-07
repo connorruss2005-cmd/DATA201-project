@@ -28,8 +28,7 @@ UPDATED_DIR_NAME = "Updated_listings"
 COMBINED_DIR_NAME = "combined_listings_for_Christchurch"
 COMBINED_FILENAME = "combined_Christchurch_listings.csv"
 
-# Older snapshots were named listings1.csv ... listings9.csv, so listings1 corresponds to October 2025, listings2 to November 2025, and so on. 
-# This mapping is used to assign a month/year label to these older snapshots.
+# Older snapshots were named listings1.csv ... listings9.csv
 NUMBERED_SNAPSHOT_MONTHS = {
     1: "October 2025",
     2: "November 2025",
@@ -41,7 +40,7 @@ NUMBERED_SNAPSHOT_MONTHS = {
     8: "May 2026",
     9: "June 2026",
 }
-# List of all month names for regex pattern matching
+
 MONTH_NAMES = (
     "January",
     "February",
