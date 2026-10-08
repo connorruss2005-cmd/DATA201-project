@@ -76,16 +76,17 @@ Result:
 Member 2 integration test passed.
 
 
-4. Remaining Task
+4. Final July/August Integration Test
 
-The automation has been tested successfully with the existing Airbnb data.
+The automation was tested using the July and August 2026 Airbnb datasets.
 
-The final test will be performed when the July and August 2026 data from
-Member 1 are available.
+Results:
+- July 2026 was successfully included.
+- August 2026 was successfully included.
+- Cleaning completed successfully.
+- Area-code mapping completed successfully.
+- No rows were lost during API mapping.
+- Missing area codes: 0.
 
-The final check should confirm that:
-- July 2026 and August 2026 remain after cleaning
-- new coordinates are mapped automatically
-- existing mappings are reused where possible
-- no Airbnb rows are lost during mapping
-- no area codes are missing
+Result:
+Member 2 final integration test passed.
