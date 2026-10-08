@@ -76,17 +76,42 @@ Result:
 Member 2 integration test passed.
 
 
-4. Final July/August Integration Test
+4. Remaining Task
 
-The automation was tested using the July and August 2026 Airbnb datasets.
+The automation has been tested successfully with the existing Airbnb data.
 
-Results:
-- July 2026 was successfully included.
-- August 2026 was successfully included.
-- Cleaning completed successfully.
-- Area-code mapping completed successfully.
-- No rows were lost during API mapping.
-- Missing area codes: 0.
+The final test will be performed when the July and August 2026 data from
+Member 1 are available.
 
-Result:
-Member 2 final integration test passed.
+The final check should confirm that:
+- July 2026 and August 2026 remain after cleaning
+- new coordinates are mapped automatically
+- existing mappings are reused where possible
+- no Airbnb rows are lost during mapping
+- no area codes are missing
+
+Member 3:
+
+5. Final D7 Automation Test
+
+The complete D7 pipeline was tested using the July 2026 and August 2026 Airbnb datasets.
+
+The pipeline was successfully run using one command from the terminal:
+
+`python Deliverables/Deliverable-7/run_pipeline.py`
+
+The pipeline loaded 3,488 July listings and 3,513 August listings, giving 7,001 listings in total.
+
+The automated cleaning step retained all 7,001 rows and both months were retained. The Koordinates API step found 3,277 unique coordinates. Since the existing area-code mapping was available, no new API queries were required. All 7,001 listings received an area code, with 0 missing area codes.
+
+The rental bond merge also passed its sanity checks. The number of Airbnb rows remained 7,001 after merging, with a 77.1% bond match rate. The latest available rental bond quarter used was 1 April 2026.
+
+The final merged dataset contained 7,001 rows and 28 columns. The dataset was saved as `july_august_2026_airbnb_with_rental_bonds.csv`.
+
+The existing analysis code was then run automatically. It produced four updated plots: price gap for all areas, price gap for the top 15 areas, listing volumes for all areas, and listing volumes for the top 15 areas.
+
+The analysis used 4,957 valid records after removing 2,044 records with zero or non-positive Airbnb prices. These records were removed only during the analysis validation stage and were still retained in the final merged dataset.
+
+All four plots opened successfully and were checked visually.
+
+This test confirms that the D7 pipeline can automate the data preparation, area-code mapping, rental bond merge and analysis steps using a single command.
